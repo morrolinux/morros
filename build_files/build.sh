@@ -10,7 +10,7 @@ dnf -y install xdg-desktop-portal-wlr
 sed -i '/^\[main\]/a max_parallel_downloads=10' /etc/dnf/dnf.conf
 
 ## System apps
-dnf -y install libvirt virt-manager qemu-kvm flatpak-builder wlr-randr iotop sysstat lxqt-openssh-askpass lxpolkit parallel just seahorse
+dnf -y install libvirt virt-manager qemu-kvm flatpak-builder wlr-randr iotop sysstat lxqt-openssh-askpass lxpolkit parallel just seahorse android-tools iperf3 ktls-utils podman-compose
 
 # User apps
 dnf -y install nautilus kitty mpv gnome-terminal gnome-system-monitor gnome-calculator loupe
