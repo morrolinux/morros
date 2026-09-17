@@ -21,6 +21,9 @@ dnf -y install https://mirrors.rpmfusion.org/free/fedora/rpmfusion-free-release-
 dnf -y swap ffmpeg-free ffmpeg --allowerasing
 dnf -y install ffmpeg-devel x264-libs obs-studio obs-studio-plugin-x264 libva-utils
 
+# dev tools
+dnf -y installalsa-lib-devel cargo clang clang-devel docker-cli docker-cli.x86_64 docker-compose.x86_64 firejail firetools libX11-devel libxkbcommon-devel moby-engine vulkan-loader-devel wayland-devel
+
 # Nautilus open any terminal extension
 curl -Lo /etc/yum.repos.d/nautilus-open-any-terminal.repo \
   https://copr.fedorainfracloud.org/coprs/monkeygold/nautilus-open-any-terminal/repo/fedora-$(rpm -E %fedora)/monkeygold-nautilus-open-any-terminal-fedora-$(rpm -E %fedora).repo
