@@ -24,6 +24,22 @@ dnf -y install ffmpeg-devel x264-libs obs-studio obs-studio-plugin-x264 libva-ut
 # dev tools
 dnf -y install alsa-lib-devel rustfmt cargo clang clang-devel docker-cli docker-cli.x86_64 docker-compose.x86_64 firejail firetools libX11-devel libxkbcommon-devel moby-engine vulkan-loader-devel wayland-devel clippy cmake docker-buildx git nasm  patchelf perf
 
+# OpenSnitch application firewall (not in Fedora repos): latest upstream release,
+# checked against the SHA-256 digests GitHub publishes for the release assets
+command -v jq || dnf -y install jq
+curl -fsSL https://api.github.com/repos/evilsocket/opensnitch/releases/latest -o /tmp/opensnitch-release.json
+OPENSNITCH_RPMS=()
+for pattern in '^opensnitch-[0-9.]+-1\.x86_64\.rpm$' '^opensnitch-ui-[0-9.]+-1\.noarch\.rpm$'; do
+  read -r name url digest < <(jq -r --arg re "$pattern" \
+    '.assets[] | select(.name | test($re)) | "\(.name) \(.browser_download_url) \(.digest)"' /tmp/opensnitch-release.json)
+  [[ "$digest" == sha256:* ]] || { echo "no sha256 digest for OpenSnitch asset $pattern"; exit 1; }
+  curl -fLo "/tmp/$name" "$url"
+  echo "${digest#sha256:}  /tmp/$name" | sha256sum -c -
+  OPENSNITCH_RPMS+=("/tmp/$name")
+done
+dnf -y install "${OPENSNITCH_RPMS[@]}"
+systemctl enable opensnitch.service
+
 # Nautilus open any terminal extension
 curl -Lo /etc/yum.repos.d/nautilus-open-any-terminal.repo \
   https://copr.fedorainfracloud.org/coprs/monkeygold/nautilus-open-any-terminal/repo/fedora-$(rpm -E %fedora)/monkeygold-nautilus-open-any-terminal-fedora-$(rpm -E %fedora).repo
