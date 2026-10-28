@@ -37,7 +37,11 @@ for pattern in '^opensnitch-[0-9.]+-1\.x86_64\.rpm$' '^opensnitch-ui-[0-9.]+-1\.
   echo "${digest#sha256:}  /tmp/$name" | sha256sum -c -
   OPENSNITCH_RPMS+=("/tmp/$name")
 done
-dnf -y install "${OPENSNITCH_RPMS[@]}"
+# the daemon's %post runs `systemctl start`, which fails without a running systemd:
+# install its deps normally, then the daemon without scriptlets and enable it by hand
+dnf -y install libnetfilter_queue libnfnetlink
+dnf -y install --setopt=tsflags=noscripts "${OPENSNITCH_RPMS[0]}"
+dnf -y install "${OPENSNITCH_RPMS[1]}"
 systemctl enable opensnitch.service
 
 # Nautilus open any terminal extension
