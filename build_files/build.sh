@@ -9,8 +9,11 @@ dnf -y install xdg-desktop-portal-wlr
 ## DNF5 Speedup
 sed -i '/^\[main\]/a max_parallel_downloads=10' /etc/dnf/dnf.conf
 
+## System utilities
+dnf -y install brightnessctl
+
 ## System apps
-dnf -y install libvirt virt-manager qemu-kvm flatpak-builder wlr-randr iotop sysstat lxqt-openssh-askpass lxpolkit parallel just seahorse android-tools iperf3 ktls-utils podman-compose
+dnf -y install libvirt virt-manager qemu-kvm flatpak-builder wlr-randr iotop sysstat lxqt-openssh-askpass lxpolkit parallel just seahorse android-tools iperf3 ktls-utils podman-compose freerdp
 
 # User apps
 dnf -y install nautilus kitty mpv gnome-terminal gnome-system-monitor gnome-calculator loupe 
@@ -58,6 +61,16 @@ dnf -y install niri
 curl -Lo /etc/yum.repos.d/peterwu.repo \
   https://copr.fedorainfracloud.org/coprs/peterwu/rendezvous/repo/fedora-$(rpm -E %fedora)/peterwu-rendezvous-fedora-$(rpm -E %fedora).repo
 dnf -y install bibata-cursor-themes
+
+# Install winboat
+WINBOAT_URL=$(curl -s https://api.github.com/repos/winboat-org/winboat/releases/latest \
+  | grep "browser_download_url" \
+  | grep -E "x86_64\.rpm|\.rpm" \
+  | cut -d '"' -f 4)
+
+curl -Lo /tmp/winboat.rpm "$WINBOAT_URL"
+dnf install -y /tmp/winboat.rpm
+rm -f /tmp/winboat.rpm
 
 # # Install Noctalia shell
 # curl -fsSL https://github.com/terrapkg/subatomic-repos/raw/main/terra.repo -o /etc/yum.repos.d/terra.repo
