@@ -42,6 +42,8 @@ done
 dnf -y install libnetfilter_queue libnfnetlink
 dnf -y install --setopt=tsflags=noscripts "${OPENSNITCH_RPMS[0]}"
 dnf -y install "${OPENSNITCH_RPMS[1]}"
+# the UI rpm doesn't declare its python deps (upstream expects pip)
+dnf -y install python3-grpcio python3-protobuf python3-slugify python3-notify2
 systemctl enable opensnitch.service
 
 # Nautilus open any terminal extension
