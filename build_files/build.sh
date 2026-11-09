@@ -90,6 +90,13 @@ ln -s /usr/lib/systemd/user/dms.service /etc/skel/.config/systemd/user/graphical
 mkdir -p /etc/skel/.config/niri/
 cp -rf /ctx/dot_config/niri/config.kdl /etc/skel/.config/niri/
 
+# Secret Service (oo7, replaces gnome-keyring in the base image): the unit ships
+# disabled and there is no D-Bus activation file for org.freedesktop.secrets,
+# so without this nothing provides it and apps (Nextcloud, browsers) lose logins.
+# --global enables the user unit for every user: it only creates the symlink
+# /etc/systemd/user/default.target.wants/oo7-daemon.service, no running systemd needed
+systemctl --global enable oo7-daemon.service
+
 # DEV packages
 # cargo evtest git input-remapper libevdev-devel libinput-utils python3-devel
 
